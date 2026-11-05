@@ -1,0 +1,1123 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Flujo de planillas PROVIAMA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: índice lateral fijo + columna de lectura; diagramas a ancho completo con desplazamiento propio. Identidad: señalización vial (asfalto + amarillo de demarcación). */
+:root{
+  --bg:#eef1f3; --paper:#ffffff; --ink:#17212b; --muted:#56616d; --line:#c3cbd3; --soft:#e2e7eb;
+  --accent:#e2a400; --accent-ink:#835c00; --accent-soft:#fff3cf;
+  --signal:#1d5da6; --ok:#2b7a4b; --warn:#b26a00; --bad:#c03a12; --idle:#7c8894;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161b; --paper:#182028; --ink:#e5e9ed; --muted:#9ba6b2; --line:#33404c; --soft:#212b35;
+  --accent:#f0c22e; --accent-ink:#f0c22e; --accent-soft:#3a3214;
+  --signal:#6aa6ea; --ok:#56b77f; --warn:#e7a43a; --bad:#f07a48; --idle:#8a96a3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161b; --paper:#182028; --ink:#e5e9ed; --muted:#9ba6b2; --line:#33404c; --soft:#212b35;
+  --accent:#f0c22e; --accent-ink:#f0c22e; --accent-soft:#3a3214;
+  --signal:#6aa6ea; --ok:#56b77f; --warn:#e7a43a; --bad:#f07a48; --idle:#8a96a3; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+a{color:var(--signal)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-top:40px;font-size:13px}
+nav.toc p{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px;font-weight:600}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;border-left:2px solid var(--line)}
+nav.toc a{display:block;padding:4px 12px;color:var(--ink);text-decoration:none;margin-left:-2px;border-left:2px solid transparent}
+nav.toc a:hover{border-left-color:var(--accent);background:var(--soft)}
+main{min-width:0}
+header.hero{padding-block:40px 28px;border-bottom:6px solid var(--accent);position:relative}
+header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:6px;background:repeating-linear-gradient(90deg,transparent 0 28px,var(--bg) 28px 44px)}
+.eyebrow{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-weight:600;color:var(--accent-ink);font-size:14px;margin:0}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(34px,5vw,54px);line-height:1;margin:6px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-weight:700;font-size:32px;line-height:1.05;margin:0 0 10px;text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:600;font-size:21px;margin:28px 0 6px;letter-spacing:.01em}
+p{max-width:72ch;margin:0 0 12px}
+.lead{font-size:17px;color:var(--muted);max-width:68ch}
+section{padding-block:48px 8px;border-bottom:1px solid var(--line)}
+section .kicker{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin:0 0 4px;letter-spacing:.02em}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:24px}
+.kpi{background:var(--paper);padding:14px 16px}
+.kpi b{display:block;font-family:var(--f-display);font-size:30px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12.5px;color:var(--muted)}
+.key{display:grid;gap:10px;margin:20px 0 0;padding:0;list-style:none;max-width:80ch}
+.key li{padding-left:22px;position:relative}
+.key li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:6px;background:var(--accent)}
+figure{margin:20px 0 8px;background:var(--paper);border:1px solid var(--line);padding:16px 16px 12px}
+figure .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+figure svg{display:block;width:100%;height:auto;min-width:680px}
+figure svg.chart{min-width:560px}
+figcaption{font-size:13px;color:var(--muted);margin-top:10px;max-width:90ch}
+figcaption b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin:2px 0 8px}
+.legend i{display:inline-block;width:14px;height:10px;vertical-align:-1px;margin-right:6px;border-radius:2px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.note{background:var(--accent-soft);border-left:4px solid var(--accent);padding:10px 14px;font-size:14px;max-width:80ch;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px;background:var(--paper)}
+.tbl{overflow-x:auto;border:1px solid var(--line);margin:16px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--soft);vertical-align:top}
+th{font-family:var(--f-display);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:13px;color:var(--muted);background:var(--soft)}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:10px;border:1px solid currentColor;white-space:nowrap}
+.pill.ok{color:var(--ok)} .pill.warn{color:var(--warn)} .pill.bad{color:var(--bad)} .pill.info{color:var(--signal)} .pill.idle{color:var(--idle)}
+.timeline{list-style:none;margin:16px 0;padding:0;border-left:2px solid var(--line);max-width:760px}
+.timeline li{position:relative;padding:4px 0 12px 22px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:10px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--idle)}
+.timeline li.dev::before{border-color:var(--bad)} .timeline li.fwd::before{border-color:var(--signal)} .timeline li.end::before{background:var(--ok);border-color:var(--ok)}
+.timeline time{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);margin-right:8px}
+.qs{counter-reset:q;list-style:none;padding:0;margin:16px 0;display:grid;gap:12px;max-width:86ch}
+.qs li{counter-increment:q;padding:12px 14px 12px 56px;background:var(--paper);border:1px solid var(--line);position:relative}
+.qs li::before{content:counter(q);position:absolute;left:14px;top:10px;font-family:var(--f-display);font-weight:700;font-size:24px;color:var(--accent-ink);line-height:1}
+.qs li small{display:block;color:var(--muted);margin-top:4px}
+pre.mermaid{background:var(--paper);border:1px solid var(--line);padding:16px;overflow-x:auto;font-size:12px}
+.src{font-size:13px;color:var(--muted)}
+/* SVG */
+svg text{font-family:var(--f-body);fill:var(--ink)}
+.bx{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+.bx-soft{fill:var(--soft);stroke:none}
+.bx-acc{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.bx-dash{fill:var(--paper);stroke:var(--idle);stroke-width:1.5;stroke-dasharray:6 4}
+.bx-ok{fill:var(--paper);stroke:var(--ok);stroke-width:2}
+.bx-bad{fill:var(--paper);stroke:var(--bad);stroke-width:2}
+.lane{fill:var(--soft)} .lane2{fill:var(--paper)}
+.t{font-size:13px;font-weight:700} .ts{font-size:11.5px;fill:var(--muted)} .tm{font-size:11px;font-family:var(--f-mono);fill:var(--muted)}
+.th{font-family:var(--f-display);font-size:15px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;fill:var(--muted)}
+.ar{stroke:var(--ink);stroke-width:1.6;fill:none}
+.ar-acc{stroke:var(--accent-ink);stroke-width:2;fill:none}
+.ar-ret{stroke:var(--bad);stroke-width:1.6;fill:none;stroke-dasharray:5 4}
+.ar-dash{stroke:var(--idle);stroke-width:1.5;fill:none;stroke-dasharray:4 4}
+.ar-ok{stroke:var(--ok);stroke-width:2;fill:none} .ar-warn{stroke:var(--warn);stroke-width:2;fill:none;stroke-dasharray:7 4} .ar-bad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:2 4}
+.hd-ink{fill:var(--ink)} .hd-acc{fill:var(--accent-ink)} .hd-bad{fill:var(--bad)} .hd-idle{fill:var(--idle)}
+.lbl-ret{fill:var(--bad);font-size:11.5px;font-weight:600} .lbl-acc{fill:var(--accent-ink);font-size:11.5px;font-weight:600}
+.lbl-ok{fill:var(--ok);font-size:11.5px;font-weight:600} .lbl-warn{fill:var(--warn);font-size:11.5px;font-weight:600} .lbl-bad{fill:var(--bad);font-size:11.5px;font-weight:600}
+.boundary{stroke:var(--accent-ink);stroke-width:2;stroke-dasharray:10 6}
+/* gráficos */
+.grid{stroke:var(--soft);stroke-width:1}
+.tick{font-size:11.5px;fill:var(--muted)} .tick.strong{fill:var(--ink);font-weight:600} .tick.lab{fill:var(--ink);font-weight:600} .tick.warn{fill:var(--bad);font-weight:600}
+.cut{stroke:var(--accent-ink);stroke-width:1.5;stroke-dasharray:4 4}
+.pv-area{fill:var(--accent);opacity:.14}
+.l-pv{stroke:var(--accent-ink);stroke-width:2.5} .l-ev{stroke:var(--signal);stroke-width:2.5} .l-ac{stroke:var(--bad);stroke-width:2.5;stroke-dasharray:6 4}
+.d-ev{fill:var(--signal)} .d-fin{fill:var(--ok)}
+.b-pv{fill:var(--accent)} .b-ac{fill:var(--bad)}
+.s-pag{fill:var(--ok)} .s-rev{fill:var(--signal)} .s-dev{fill:var(--bad)} .s-ela{fill:var(--idle)} .s-fut{fill:none;stroke:var(--line);stroke-width:1.5}
+.lag-line{stroke:var(--line);stroke-width:6;stroke-linecap:round} .d-lag{fill:var(--signal);stroke:var(--paper);stroke-width:2}
+.w-abs{fill:var(--signal)} .w-pos{fill:var(--ok)} .w-neg{fill:var(--bad)} .conn{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3}
+@media (max-width:900px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:0}
+  nav.toc{position:static;padding-top:20px}
+  nav.toc ol{display:flex;flex-wrap:wrap;border-left:0;gap:4px}
+  nav.toc a{border:1px solid var(--line);margin:0;border-radius:14px;padding:2px 10px;background:var(--paper)}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Secciones">
+  <p>Contenido</p>
+  <ol>
+    <li><a href="#resumen">Resumen</a></li>
+    <li><a href="#decisiones">Decisiones</a></li>
+    <li><a href="#contexto">Fuentes y sistema</a></li>
+    <li><a href="#planilla">Ciclo de la planilla</a></li>
+    <li><a href="#valor">Valor de la planilla</a></li>
+    <li><a href="#modulos">Financiero y presupuestario</a></li>
+    <li><a href="#evm">Valor ganado</a></li>
+    <li><a href="#datos">Lo que dicen los archivos</a></li>
+    <li><a href="#conciliacion">Conciliación</a></li>
+    <li><a href="#software">El software</a></li>
+    <li><a href="#modelo">Modelo de datos</a></li>
+    <li><a href="#hallazgos">Hallazgos</a></li>
+    <li><a href="#preguntas">Pendientes</a></li>
+  </ol>
+</nav>
+<main>
+<header class="hero" id="resumen">
+  <p class="eyebrow">UGP · Prefectura de Manabí · PROVIAMA-CAF</p>
+  <h1>Flujo de planillas, presupuesto y valor ganado</h1>
+  <p class="lead">Análisis de procesos para cargar en UGP Integra la información de las tres obras viales: lo que lleva cada administrador de contrato en su base maestra, lo que lleva el área financiera en el seguimiento de planillas y lo que se acordó en la reunión del tablero gerencial.</p>
+  <div class="kpis">
+    <div class="kpi"><b>$39,61 M</b><span>contratado en las 3 obras (18 planillas cada una)</span></div>
+    <div class="kpi"><b>13</b><span>planillas pagadas · 2 en revisión de fiscalización · 1 devuelta</span></div>
+    <div class="kpi"><b>$9,49 M</b><span>valor pagado neto (planilla − anticipo + reajuste)</span></div>
+    <div class="kpi"><b>30/06/2026</b><span>último corte de la base maestra Ayacucho; el financiero ya registra julio</span></div>
+  </div>
+  <ul class="key">
+    <li><b>La planilla es la unidad de carga.</b> Cada periodo mensual produce una planilla; de ella salen los tres módulos: financiero (liquidez), presupuestario (devengado) y valor ganado (avance).</li>
+    <li><b>El estado de la planilla es dinámico.</b> Puede volver atrás varias veces el mismo día. A UGP Integra suben solo las planillas pagadas; los demás estados se activan por proyecto y cada cambio exige un documento de respaldo.</li>
+    <li><b>UGP Integra todavía no tiene la entidad «planilla».</b> Hoy registra rubros, entregas y valor ganado; faltan estados, reajustes, anticipo, OPIS, N° SPA, código de proceso y partidas presupuestarias.</li>
+    <li><b>Los dos Excel no hablan el mismo idioma.</b> El «avance físico» del financiero es avance económico y el código del proyecto difiere entre archivo y sistema. Antes de automatizar hay que homologar los nombres de los indicadores.</li>
+  </ul>
+</header>
+
+<section id="decisiones">
+  <p class="kicker">Respuestas del 23/10/2026</p>
+  <h2>Decisiones confirmadas</h2>
+  <p>Estas respuestas cambian el diseño en cuatro puntos: los estados son configurables, solo lo pagado suma, cada cambio de estado lleva respaldo y los reajustes cuelgan de la planilla del mes en que se facturan.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Tema</th><th>Decisión</th><th>Qué hace el sistema</th></tr></thead>
+    <tbody>
+      <tr><td>Estados</td><td>Los estados intermedios son parametrizables. Importan la planilla aprobada bajo administración de la UGP y la pagada.</td><td>Catálogo de estados por proyecto, cada uno activo o inactivo; «Pagado» siempre activo.</td></tr>
+      <tr><td>Quién cambia el estado</td><td>Administrador de contrato o financiero, según se habilite en cada proyecto, con documento de respaldo.</td><td>Permiso por proyecto y perfil. Sin respaldo adjunto el cambio no se guarda.</td></tr>
+      <tr><td>Pagado</td><td>Se marca con el oficio remitido.</td><td>El evento de pago pide número y fecha del oficio.</td></tr>
+      <tr><td>Reajustes</td><td>Se asocian a la planilla del mes en que se facturan; una planilla puede tener varios.</td><td>Facturas de reajuste 1..n por planilla, con signo.</td></tr>
+      <tr><td>Qué se carga</td><td>Solo lo pagado. Si luego se activa otro estado, debe verse destacado.</td><td>Montos y acumulados solo de planillas pagadas; otros estados con distintivo, sin sumar.</td></tr>
+      <tr><td>Archivos</td><td>Son referenciales, con información hasta su fecha.</td><td>Las cifras de esta página ilustran la estructura, no se corrigen.</td></tr>
+      <tr><td>Código del proyecto</td><td>El que se ajuste a la documentación.</td><td>Ayacucho = UGP-002, según su base maestra (ver pendientes).</td></tr>
+      <tr><td>Códigos externos</td><td>e-GOP tiene su propio código; AFLOW se carga por planilla.</td><td>Contrato: código e-GOP. Planilla: N° SPA AFLOW.</td></tr>
+      <tr><td>Fuente CAF / GADPM</td><td>Se define en el proceso, como información general.</td><td>Reparto parametrizado en el contrato.</td></tr>
+      <tr><td>Ambientales</td><td>Son transversales.</td><td>Rubros sin tramo: no se pintan en un tramo del mapa; se reportan aparte.</td></tr>
+      <tr><td>Complementarios</td><td>Sus rubros se incorporan al cronograma vigente.</td><td>Nueva versión maestra del mismo objeto, vinculada al contrato complementario.</td></tr>
+      <tr><td>Base maestra</td><td>Sin frecuencia fija; puede ser diaria o semanal.</td><td>Carga en cualquier momento con fecha de corte explícita; el tablero muestra el corte de cada fuente.</td></tr>
+      <tr><td>Plazo adicional</td><td>Se pueden activar o desactivar periodos fuera del contrato.</td><td>Planillas marcadas «fuera de contrato»; el total de periodos se ajusta por proyecto.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+
+<section id="contexto">
+  <p class="kicker">Vista general</p>
+  <h2>De los Excel al tablero y al mapa</h2>
+  <p>Tres fuentes alimentan el sistema. Solo la base maestra tiene hoy un importador. El seguimiento de planillas y el cuadro de fuentes y usos se cargan a mano, y los sistemas institucionales (e-GOP, AFLOW, SERCOP) no se integran: se consultan y su código se transcribe.</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1100 500" role="img" aria-label="Tres fuentes de información alimentan tres módulos de UGP Integra, que publican al tablero gerencial, a la capa ArcGIS por tramo y al tablero ciudadano">
+      <defs>
+        <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-ink"/></marker>
+        <marker id="a1d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-idle"/></marker>
+        <marker id="a1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-acc"/></marker>
+      </defs>
+      <text x="16" y="24" class="th">Fuentes</text>
+      <text x="416" y="24" class="th">UGP Integra</text>
+      <text x="836" y="24" class="th">Salidas</text>
+      <!-- fuentes -->
+      <rect x="16" y="44" width="270" height="92" class="bx"/>
+      <text x="30" y="68" class="t">Base de datos maestra</text>
+      <text x="30" y="88" class="ts">Administradores de contrato · 1 por obra</text>
+      <text x="30" y="106" class="tm">ValorPlanificado · Valor Ganado</text>
+      <text x="30" y="122" class="tm">CostoReal · AnálisisVG</text>
+      <rect x="16" y="156" width="270" height="92" class="bx"/>
+      <text x="30" y="180" class="t">Seguimiento de planillas</text>
+      <text x="30" y="200" class="ts">Área financiera · 20 columnas por planilla</text>
+      <text x="30" y="218" class="tm">estado · montos · reajuste</text>
+      <text x="30" y="234" class="tm">OPIS · N° SPA AFLOW</text>
+      <rect x="16" y="268" width="270" height="92" class="bx"/>
+      <text x="30" y="292" class="t">Cuadro fuentes y usos (FYU)</text>
+      <text x="30" y="312" class="ts">Área financiera · hoy solo encabezados</text>
+      <text x="30" y="330" class="tm">partida · codificado → pagado</text>
+      <text x="30" y="346" class="tm">devengado 2024–2028</text>
+      <rect x="16" y="380" width="270" height="92" class="bx-dash"/>
+      <text x="30" y="404" class="t">Sistemas institucionales</text>
+      <text x="30" y="424" class="ts">e-GOP / ERP · AFLOW · SERCOP</text>
+      <text x="30" y="442" class="tm">código de proceso · SPA · OPI</text>
+      <text x="30" y="458" class="tm">cédula presupuestaria</text>
+      <!-- sistema -->
+      <rect x="416" y="44" width="340" height="428" class="bx-soft"/>
+      <rect x="432" y="60" width="308" height="72" class="bx"/>
+      <text x="446" y="84" class="t">Módulo valor ganado</text>
+      <text x="446" y="104" class="ts">Existe: importador de la base maestra,</text>
+      <text x="446" y="120" class="ts">evm_rubro_periodo y tablero de avance</text>
+      <rect x="432" y="148" width="308" height="72" class="bx-acc"/>
+      <text x="446" y="172" class="t">Módulo planillas y estados</text>
+      <text x="446" y="192" class="ts">Nuevo: planilla por periodo, eventos</text>
+      <text x="446" y="208" class="ts">de estado, montos y reajustes</text>
+      <rect x="432" y="236" width="308" height="72" class="bx-acc"/>
+      <text x="446" y="260" class="t">Módulo presupuestario</text>
+      <text x="446" y="280" class="ts">Nuevo: partidas, cortes por año,</text>
+      <text x="446" y="296" class="ts">saldos y semáforo</text>
+      <rect x="432" y="324" width="308" height="64" class="bx"/>
+      <text x="446" y="348" class="t">Control (existe)</text>
+      <text x="446" y="370" class="ts">Entrega → Consolidación → Calidad → Bitácora</text>
+      <rect x="432" y="400" width="308" height="56" class="bx"/>
+      <text x="446" y="422" class="t">Perfiles y alcance (existe)</text>
+      <text x="446" y="442" class="ts">por proyecto y componente asignado</text>
+      <!-- salidas -->
+      <rect x="836" y="60" width="248" height="80" class="bx"/>
+      <text x="850" y="86" class="t">Tablero gerencial y de avance</text>
+      <text x="850" y="106" class="ts">Dirección UGP · Prefecto</text>
+      <text x="850" y="122" class="ts">solo cifras validadas</text>
+      <rect x="836" y="170" width="248" height="80" class="bx"/>
+      <text x="850" y="196" class="t">API ArcGIS · capa por tramo</text>
+      <text x="850" y="216" class="ts">mapa PROVIAMA · applyEdits</text>
+      <text x="850" y="232" class="ts">pv · ev · ac · spi · cpi</text>
+      <rect x="836" y="280" width="248" height="80" class="bx"/>
+      <text x="850" y="306" class="t">Tablero ciudadano</text>
+      <text x="850" y="326" class="ts">paneles autorizados, sin datos</text>
+      <text x="850" y="342" class="ts">internos de planillas</text>
+      <!-- flechas fuente -> módulo -->
+      <path d="M286,90 C350,90 360,96 430,96" class="ar" marker-end="url(#a1)"/>
+      <text x="350" y="82" class="ts" text-anchor="middle">importa xlsx</text>
+      <path d="M286,202 C350,202 360,184 430,184" class="ar-acc" marker-end="url(#a1a)"/>
+      <text x="350" y="222" class="lbl-acc" text-anchor="middle">registro por planilla</text>
+      <path d="M286,314 C350,314 360,272 430,272" class="ar-acc" marker-end="url(#a1a)"/>
+      <text x="350" y="334" class="lbl-acc" text-anchor="middle">corte mensual</text>
+      <path d="M286,426 C350,426 360,356 430,356" class="ar-dash" marker-end="url(#a1d)"/>
+      <text x="350" y="446" class="ts" text-anchor="middle">consulta manual</text>
+      <!-- salidas -->
+      <path d="M756,100 L834,100" class="ar" marker-end="url(#a1)"/>
+      <text x="795" y="92" class="ts" text-anchor="middle">validado</text>
+      <path d="M756,210 L834,210" class="ar" marker-end="url(#a1)"/>
+      <text x="795" y="202" class="ts" text-anchor="middle">por tramo</text>
+      <path d="M756,320 L834,320" class="ar" marker-end="url(#a1)"/>
+      <text x="795" y="312" class="ts" text-anchor="middle">publicado</text>
+    </svg>
+    </div>
+    <figcaption><b>Diagrama de contexto.</b> En amarillo, lo que hay que construir. La línea discontinua marca información que nadie integra: el código de proceso de SERCOP/e-GOP, el N° de solicitud de pago (SPA) de AFLOW y la OPI se transcriben. La reunión fijó que el tablero es una herramienta de reporte gerencial alimentada a mano, no un reemplazo de e-GOP ni del ERP.</figcaption>
+  </figure>
+</section>
+
+<section id="planilla">
+  <p class="kicker">Proceso · reunión 15:34–15:56</p>
+  <h2>Ciclo de vida de una planilla</h2>
+  <p>La planilla avanza obra → fiscalización → administrador de contrato → financiero → pagado. En cualquier etapa puede ser devuelta, una o varias veces, incluso el mismo día. Lo que sale hacia el área financiera ya no lo gobierna la UGP: control previo, contabilidad y tesorería son pasos internos de esa dirección.</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1120 520" role="img" aria-label="Diagrama de carriles del ciclo de la planilla con sus devoluciones y el límite de gobernanza de la UGP">
+      <defs>
+        <marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-ink"/></marker>
+        <marker id="b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-bad"/></marker>
+        <marker id="b3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-acc"/></marker>
+      </defs>
+      <rect x="0" y="40" width="1120" height="92" class="lane"/>
+      <rect x="0" y="132" width="1120" height="92" class="lane2"/>
+      <rect x="0" y="224" width="1120" height="92" class="lane"/>
+      <rect x="0" y="316" width="1120" height="92" class="lane2"/>
+      <rect x="0" y="408" width="1120" height="92" class="lane"/>
+      <text x="14" y="82" class="t">Contratista</text><text x="14" y="100" class="ts">elabora planilla</text>
+      <text x="14" y="174" class="t">Fiscalización</text><text x="14" y="192" class="ts">revisa cantidades</text>
+      <text x="14" y="266" class="t">Administrador</text><text x="14" y="284" class="ts">de contrato</text>
+      <text x="14" y="358" class="t">Dirección</text><text x="14" y="376" class="ts">Financiera</text>
+      <text x="14" y="450" class="t">UGP Integra</text><text x="14" y="468" class="ts">registro y tablero</text>
+      <line x1="812" y1="34" x2="812" y2="420" class="boundary"/>
+      <text x="806" y="28" class="lbl-acc" text-anchor="end">gobernanza UGP</text>
+      <text x="818" y="28" class="ts">proceso interno financiero</text>
+      <!-- nodos -->
+      <rect x="160" y="63" width="140" height="46" rx="4" class="bx"/>
+      <text x="170" y="82" class="t">1 · En elaboración</text><text x="170" y="99" class="ts">del contratista</text>
+      <rect x="330" y="155" width="140" height="46" rx="4" class="bx"/>
+      <text x="340" y="174" class="t">2 · En revisión</text><text x="340" y="191" class="ts">de fiscalizador</text>
+      <rect x="500" y="247" width="140" height="46" rx="4" class="bx"/>
+      <text x="510" y="266" class="t">3 · En revisión*</text><text x="510" y="283" class="ts">del administrador</text>
+      <rect x="670" y="339" width="130" height="46" rx="4" class="bx"/>
+      <text x="680" y="358" class="t">4 · Solicitud</text><text x="680" y="375" class="ts">de pago · SPA*</text>
+      <rect x="826" y="331" width="140" height="62" rx="4" class="bx-dash"/>
+      <text x="836" y="350" class="ts">control previo →</text><text x="836" y="366" class="ts">contabilidad →</text><text x="836" y="382" class="ts">tesorería (5–7*)</text>
+      <rect x="986" y="339" width="120" height="46" rx="4" class="bx-ok"/>
+      <text x="996" y="358" class="t">8 · Pagado</text><text x="996" y="375" class="ts">oficio remitido</text>
+      <!-- avance -->
+      <path d="M300,86 L400,86 L400,153" class="ar" marker-end="url(#b1)"/>
+      <text x="306" y="78" class="ts">envía</text>
+      <path d="M470,178 L570,178 L570,245" class="ar" marker-end="url(#b1)"/>
+      <text x="476" y="170" class="ts">aprueba</text>
+      <path d="M640,270 L735,270 L735,337" class="ar" marker-end="url(#b1)"/>
+      <text x="646" y="262" class="ts">aprueba</text>
+      <path d="M800,362 L824,362" class="ar" marker-end="url(#b1)"/>
+      <path d="M966,362 L984,362" class="ar" marker-end="url(#b1)"/>
+      <!-- devoluciones -->
+      <path d="M330,190 L230,190 L230,111" class="ar-ret" marker-end="url(#b2)"/>
+      <text x="280" y="210" class="lbl-ret" text-anchor="middle">2.1 devuelto</text>
+      <path d="M500,282 L420,282 L420,203" class="ar-ret" marker-end="url(#b2)"/>
+      <text x="460" y="302" class="lbl-ret" text-anchor="middle">3.1 devuelto*</text>
+      <path d="M670,374 L590,374 L590,295" class="ar-ret" marker-end="url(#b2)"/>
+      <text x="630" y="394" class="lbl-ret" text-anchor="middle">4.1 devuelto*</text>
+      <path d="M896,393 L896,402 L765,402 L765,387" class="ar-ret" marker-end="url(#b2)"/>
+      <text x="904" y="404" class="lbl-ret">puede volver</text>
+      <!-- registro -->
+      <rect x="160" y="428" width="946" height="52" rx="4" class="bx-acc"/>
+      <text x="176" y="450" class="t">El administrador actualiza el estado vigente (lista de selección) y adjunta el respaldo.</text>
+      <text x="176" y="468" class="ts">Cada cambio se guarda como evento: estado anterior → nuevo, quién devolvió, motivo, fecha y hora, usuario. El tablero solo muestra el último.</text>
+      <path d="M1046,385 L1046,426" class="ar-acc" marker-end="url(#b3)"/>
+      <text x="1052" y="412" class="lbl-acc">cierra</text>
+      <text x="160" y="508" class="tm">Corte acordado: un producto por mes, hasta el día 5 · * estado configurable por proyecto · por defecto solo 8 · Pagado suma montos</text>
+    </svg>
+    </div>
+    <figcaption><b>Diagrama de carriles con máquina de estados.</b> Las flechas rojas son devoluciones y pueden repetirse sin límite. La numeración 1, 2, 2.1 y 8 viene del seguimiento financiero; los estados intermedios quedan como catálogo configurable por proyecto. Por defecto UGP Integra registra la planilla al quedar pagada (oficio remitido); la aprobación del administrador, ya bajo la UGP, es el otro hito que puede activarse.</figcaption>
+  </figure>
+
+  <div class="two">
+    <div>
+      <h3>Catálogo de estados configurable</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Código</th><th>Estado</th><th>Cambia</th><th>En UGP Integra</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>En elaboración del contratista</td><td>Administrador</td><td><span class="pill idle">inactivo</span></td></tr>
+          <tr><td class="num">2</td><td>En revisión de fiscalizador</td><td>Administrador</td><td><span class="pill idle">inactivo</span></td></tr>
+          <tr><td class="num">2.1</td><td>Devuelto por fiscalizador</td><td>Administrador</td><td><span class="pill idle">inactivo</span></td></tr>
+          <tr><td class="num">3</td><td>Aprobada por administrador</td><td>Administrador</td><td><span class="pill warn">hito activable</span></td></tr>
+          <tr><td class="num">3.1</td><td>Devuelto por administrador</td><td>Administrador</td><td><span class="pill idle">inactivo</span></td></tr>
+          <tr><td class="num">4</td><td>Solicitud de pago (SPA AFLOW)</td><td>Administrador</td><td><span class="pill idle">inactivo</span></td></tr>
+          <tr><td class="num">4.1</td><td>Devuelto por financiero</td><td>Financiero</td><td><span class="pill idle">inactivo</span></td></tr>
+          <tr><td class="num">5–7</td><td>Control previo · contabilidad · tesorería</td><td>Financiero</td><td><span class="pill idle">inactivo</span></td></tr>
+          <tr><td class="num">8</td><td>Pagado (oficio remitido)</td><td>Financiero o administrador</td><td><span class="pill ok">siempre · suma</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="src">«Cambia» es el valor sugerido; cada proyecto habilita qué perfil puede cambiar cada estado. Un estado inactivo no aparece en la lista de selección.</p>
+    </div>
+    <div>
+      <h3>Historial frente a estado vigente</h3>
+      <p>Ejemplo ilustrativo con fechas inventadas, para un proyecto que activó todos los estados. Con la configuración por defecto solo existiría la última línea.</p>
+      <ol class="timeline">
+        <li class="fwd"><time>02/09 10:15</time>1 → 2 · enviada a fiscalización</li>
+        <li class="dev"><time>02/09 17:40</time>2 → 2.1 · devuelta por fiscalizador: cantidades de base granular</li>
+        <li class="fwd"><time>03/09 09:05</time>2.1 → 2 · reenviada corregida</li>
+        <li class="fwd"><time>04/09 12:30</time>2 → 3 · aprobada por fiscalización</li>
+        <li class="dev"><time>04/09 16:10</time>3 → 3.1 · devuelta por administrador: falta reajuste</li>
+        <li class="fwd"><time>05/09 08:50</time>3.1 → 3 → 4 · SPA AFLOW registrada</li>
+        <li class="end"><time>18/09 11:00</time>4 → 8 · pagada, oficio N° … remitido · respaldo adjunto</li>
+      </ol>
+      <div class="note">Decisión: suben solo las planillas pagadas. Si un proyecto activa otros estados, sus planillas aparecen destacadas y no suman a los montos. Cada evento guarda quién devolvió, el motivo y el documento de respaldo.</div>
+    </div>
+  </div>
+
+  <h3>Qué pasa cuando alguien cambia un estado</h3>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1080 310" role="img" aria-label="Validación de un cambio de estado: perfil habilitado, respaldo obligatorio, evento en bitácora y efecto según el estado">
+      <defs>
+        <marker id="f1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-ink"/></marker>
+        <marker id="f2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-bad"/></marker>
+        <marker id="f3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-acc"/></marker>
+      </defs>
+      <rect x="16" y="102" width="150" height="56" rx="4" class="bx"/><text x="28" y="126" class="t">Cambio de estado</text><text x="28" y="144" class="ts">lista de estados activos</text>
+      <path d="M250,84 L322,130 L250,176 L178,130 Z" class="bx"/><text x="250" y="126" class="t" text-anchor="middle">¿Perfil</text><text x="250" y="142" class="t" text-anchor="middle">habilitado?</text>
+      <rect x="180" y="8" width="140" height="48" rx="4" class="bx-bad"/><text x="192" y="28" class="t">No se aplica</text><text x="192" y="45" class="ts">intento en bitácora</text>
+      <rect x="352" y="102" width="150" height="56" rx="4" class="bx"/><text x="364" y="126" class="t">Adjunta respaldo</text><text x="364" y="144" class="ts">oficio, memo, SPA</text>
+      <rect x="532" y="102" width="160" height="56" rx="4" class="bx"/><text x="544" y="126" class="t">Evento guardado</text><text x="544" y="144" class="ts">antes → después, usuario</text>
+      <path d="M790,84 L846,130 L790,176 L734,130 Z" class="bx"/><text x="790" y="126" class="t" text-anchor="middle">¿Qué</text><text x="790" y="142" class="t" text-anchor="middle">estado?</text>
+      <rect x="900" y="62" width="164" height="56" rx="4" class="bx-ok"/><text x="912" y="86" class="t">8 · Pagado</text><text x="912" y="104" class="ts">suma al tablero y al mapa</text>
+      <rect x="900" y="146" width="164" height="56" rx="4" class="bx-acc"/><text x="912" y="170" class="t">Otro estado activo</text><text x="912" y="188" class="ts">se muestra destacado</text>
+      <path d="M166,130 L176,130" class="ar" marker-end="url(#f1)"/>
+      <path d="M322,130 L350,130" class="ar" marker-end="url(#f1)"/><text x="334" y="122" class="ts" text-anchor="middle">sí</text>
+      <path d="M250,84 L250,58" class="ar-ret" marker-end="url(#f2)"/><text x="258" y="74" class="lbl-ret">no</text>
+      <path d="M502,130 L530,130" class="ar" marker-end="url(#f1)"/><text x="516" y="176" class="lbl-ret" text-anchor="middle">obligatorio</text>
+      <path d="M692,130 L732,130" class="ar" marker-end="url(#f1)"/>
+      <path d="M830,117 L898,92" class="ar" marker-end="url(#f1)"/>
+      <path d="M830,143 L898,172" class="ar" marker-end="url(#f1)"/>
+      <rect x="16" y="244" width="1048" height="54" rx="4" class="bx-soft"/>
+      <text x="30" y="266" class="t">Configuración del proyecto</text>
+      <text x="30" y="286" class="ts">estados activos · perfiles que cambian cada estado (administrador, financiero) · respaldo obligatorio · periodos fuera de contrato · reparto CAF / GADPM</text>
+      <path d="M250,242 L250,178" class="ar-dash" marker-end="url(#f3)"/>
+      <path d="M790,242 L790,178" class="ar-dash" marker-end="url(#f3)"/>
+      <text x="258" y="214" class="ts">define</text><text x="798" y="214" class="ts">define</text>
+    </svg>
+    </div>
+    <figcaption><b>Regla de cambio de estado.</b> El permiso y la lista de estados salen de la configuración del proyecto. El documento de respaldo se guarda como evidencia del evento, con el mismo control de archivo (hash) que ya usan las entregas.</figcaption>
+  </figure>
+</section>
+
+<section id="valor">
+  <p class="kicker">Datos · seguimiento financiero, planilla 1 de Colón – Quimís</p>
+  <h2>Cómo se compone el valor de una planilla</h2>
+  <p>Las columnas del seguimiento financiero encadenan cálculos que no están escritos como fórmulas. Se reconstruyeron con los valores: la planilla neta es el 80 % de la bruta (anticipo del 20 % en las tres obras), el valor a pagar es neta más reajuste, y la OPIS queda cerca de 2,9 % por debajo por retenciones y timbres.</p>
+  <figure>
+    <div class="scroll"><svg viewBox="0 0 760 330" role="img" aria-label="Cómo pasa la planilla 1 de Colón – Quimís del valor bruto al pago efectivo" class="chart">
+<line x1="70" x2="740" y1="238.0" y2="238.0" class="grid"/>
+<text x="62" y="242.0" class="tick" text-anchor="end">0 k</text>
+<line x1="70" x2="740" y1="190.7" y2="190.7" class="grid"/>
+<text x="62" y="194.7" class="tick" text-anchor="end">250 k</text>
+<line x1="70" x2="740" y1="143.5" y2="143.5" class="grid"/>
+<text x="62" y="147.5" class="tick" text-anchor="end">500 k</text>
+<line x1="70" x2="740" y1="96.2" y2="96.2" class="grid"/>
+<text x="62" y="100.2" class="tick" text-anchor="end">750 k</text>
+<line x1="70" x2="740" y1="48.9" y2="48.9" class="grid"/>
+<text x="62" y="52.9" class="tick" text-anchor="end">1000 k</text>
+<rect x="88.2" y="48.7" width="59.3" height="189.3" class="w-abs"/>
+<text x="117.9" y="42.7" class="tick strong" text-anchor="middle">$1.001.138</text>
+<line x1="147.5" x2="183.9" y1="48.7" y2="48.7" class="conn"/>
+<text x="117.9" y="256" class="tick lab" text-anchor="middle">Planilla</text>
+<text x="117.9" y="270" class="tick lab" text-anchor="middle">bruta</text>
+<rect x="183.9" y="48.7" width="59.3" height="37.9" class="w-neg"/>
+<text x="213.6" y="42.7" class="tick strong" text-anchor="middle">−$200.228</text>
+<line x1="243.2" x2="279.6" y1="86.6" y2="86.6" class="conn"/>
+<text x="213.6" y="256" class="tick lab" text-anchor="middle">Amortización</text>
+<text x="213.6" y="270" class="tick lab" text-anchor="middle">anticipo 20 %</text>
+<rect x="279.6" y="86.6" width="59.3" height="151.4" class="w-abs"/>
+<text x="309.3" y="80.6" class="tick strong" text-anchor="middle">$800.911</text>
+<line x1="339.0" x2="375.3" y1="86.6" y2="86.6" class="conn"/>
+<text x="309.3" y="256" class="tick lab" text-anchor="middle">Planilla neta</text>
+<text x="309.3" y="270" class="tick lab" text-anchor="middle">(L)</text>
+<rect x="375.3" y="77.3" width="59.3" height="9.3" class="w-pos"/>
+<text x="405.0" y="71.3" class="tick strong" text-anchor="middle">+$48.951</text>
+<line x1="434.7" x2="471.0" y1="77.3" y2="77.3" class="conn"/>
+<text x="405.0" y="256" class="tick lab" text-anchor="middle">Reajuste de</text>
+<text x="405.0" y="270" class="tick lab" text-anchor="middle">precios (N)</text>
+<rect x="471.0" y="77.3" width="59.3" height="160.7" class="w-abs"/>
+<text x="500.7" y="71.3" class="tick strong" text-anchor="middle">$849.861</text>
+<line x1="530.4" x2="566.8" y1="77.3" y2="77.3" class="conn"/>
+<text x="500.7" y="256" class="tick lab" text-anchor="middle">Valor a pagar</text>
+<text x="500.7" y="270" class="tick lab" text-anchor="middle">(O = L + N)</text>
+<rect x="566.8" y="77.3" width="59.3" height="4.6" class="w-neg"/>
+<text x="596.4" y="71.3" class="tick strong" text-anchor="middle">−$24.336</text>
+<line x1="626.1" x2="662.5" y1="81.9" y2="81.9" class="conn"/>
+<text x="596.4" y="256" class="tick lab" text-anchor="middle">Retenciones y</text>
+<text x="596.4" y="270" class="tick lab" text-anchor="middle">timbres</text>
+<rect x="662.5" y="81.9" width="59.3" height="156.1" class="w-abs"/>
+<text x="692.1" y="75.9" class="tick strong" text-anchor="middle">$825.525</text>
+<text x="692.1" y="256" class="tick lab" text-anchor="middle">OPIS de pago</text>
+<text x="692.1" y="270" class="tick lab" text-anchor="middle">(Q)</text>
+</svg></div>
+    <div class="legend"><span><i style="background:var(--signal)"></i>subtotal</span><span><i style="background:var(--ok)"></i>suma</span><span><i style="background:var(--bad)"></i>resta</span></div>
+    <figcaption><b>Cascada de la planilla 1 de Colón.</b> Comprobado en las 13 planillas pagadas: O = L + N sin diferencia y L = 0,8 × (M − N). La columna M, titulada «incluye anticipo», en realidad es bruta + reajuste (1.050.089,14). El reajuste llega en facturas aparte (provisional y definitivo) y el definitivo puede restar. Decisión: cada reajuste se asocia a la planilla del mes en que se factura, así que una planilla puede llevar varios, incluso definitivos de meses anteriores.</figcaption>
+  </figure>
+</section>
+
+<section id="modulos">
+  <p class="kicker">Proceso · reunión 16:01–16:15</p>
+  <h2>Un mismo dato, dos módulos</h2>
+  <p>La planilla es el punto de partida de ambos módulos, pero cada uno la mide distinto. El financiero responde «¿cuánto del desembolso se consumió?»; el presupuestario responde «¿cuánto se devengó de cada partida?». Por eso la reunión pidió separar la planilla y el reajuste en columnas distintas y homologar el criterio con los tres administradores.</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1030 400" role="img" aria-label="La planilla alimenta el módulo financiero, que descuenta anticipo y retenciones, y el módulo presupuestario, que devenga bruta más reajuste en la partida">
+      <defs>
+        <marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-ink"/></marker>
+        <marker id="c2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-acc"/></marker>
+      </defs>
+      <rect x="16" y="150" width="170" height="84" rx="4" class="bx-acc"/>
+      <text x="30" y="176" class="t">Planilla del periodo</text>
+      <text x="30" y="196" class="ts">valor bruto + reajuste</text>
+      <text x="30" y="214" class="ts">por obra y N de 18</text>
+      <text x="230" y="40" class="th">Financiero · liquidez</text>
+      <rect x="230" y="56" width="140" height="56" rx="4" class="bx"/><text x="242" y="80" class="t">Bruta − anticipo</text><text x="242" y="98" class="ts">amortiza 20 %</text>
+      <rect x="390" y="56" width="140" height="56" rx="4" class="bx"/><text x="402" y="80" class="t">± reajuste</text><text x="402" y="98" class="ts">− retenciones, IVA</text>
+      <rect x="550" y="56" width="140" height="56" rx="4" class="bx"/><text x="562" y="80" class="t">Pago efectivo</text><text x="562" y="98" class="ts">OPIS · OPI</text>
+      <rect x="710" y="56" width="140" height="56" rx="4" class="bx"/><text x="722" y="80" class="t">Consume</text><text x="722" y="98" class="ts">desembolso CAF/local</text>
+      <rect x="870" y="56" width="144" height="56" rx="4" class="bx"/><text x="882" y="80" class="t">Saldo</text><text x="882" y="98" class="ts">por desembolsar</text>
+      <path d="M370,84 L388,84" class="ar" marker-end="url(#c1)"/><path d="M530,84 L548,84" class="ar" marker-end="url(#c1)"/>
+      <path d="M690,84 L708,84" class="ar" marker-end="url(#c1)"/><path d="M850,84 L868,84" class="ar" marker-end="url(#c1)"/>
+      <path d="M101,150 L101,84 L228,84" class="ar" marker-end="url(#c1)"/>
+      <text x="230" y="230" class="th">Presupuestario · devengado</text>
+      <rect x="230" y="246" width="140" height="56" rx="4" class="bx"/><text x="242" y="270" class="t">Codificado</text><text x="242" y="288" class="ts">asignado a la partida</text>
+      <rect x="390" y="246" width="140" height="56" rx="4" class="bx"/><text x="402" y="270" class="t">Certificado</text><text x="402" y="288" class="ts">reserva por contrato</text>
+      <rect x="550" y="246" width="140" height="56" rx="4" class="bx"/><text x="562" y="270" class="t">Comprometido</text><text x="562" y="288" class="ts">contrato firmado</text>
+      <rect x="710" y="246" width="140" height="56" rx="4" class="bx-acc"/><text x="722" y="270" class="t">Devengado</text><text x="722" y="288" class="ts">planilla aprobada</text>
+      <rect x="870" y="246" width="144" height="56" rx="4" class="bx"/><text x="882" y="270" class="t">Pagado</text><text x="882" y="288" class="ts">transferido</text>
+      <path d="M370,274 L388,274" class="ar" marker-end="url(#c1)"/><path d="M530,274 L548,274" class="ar" marker-end="url(#c1)"/>
+      <path d="M690,274 L708,274" class="ar" marker-end="url(#c1)"/><path d="M850,274 L868,274" class="ar" marker-end="url(#c1)"/>
+      <path d="M101,234 L101,340 L780,340 L780,304" class="ar-acc" marker-end="url(#c2)"/>
+      <text x="440" y="334" class="lbl-acc" text-anchor="middle">devenga bruta + reajuste, sin descontar anticipo</text>
+      <text x="230" y="372" class="ts">Por certificar = codificado − certificado · saldo de partida con semáforo frente a la programación (rojo si hay sobreejecución)</text>
+      <text x="230" y="390" class="tm">Columnas FYU: Codificado · Certificado · Comprometido · Devengado · Pagado · Por certificar · 2024…2028</text>
+    </svg>
+    </div>
+    <figcaption><b>Dos cálculos sobre la misma planilla.</b> Hoy no se registra igual: en la reunión se dijo que la base maestra lleva solo el monto planillado sin reajuste, mientras Manuel y Raquel llevan sus controles con reajuste. La base maestra de Ayacucho confirma lo primero: su costo real es la planilla bruta sin reajuste. La diferencia de unos dólares entre ambos módulos se atribuye a timbres, que el financiero sí registra.</figcaption>
+  </figure>
+</section>
+
+<section id="evm">
+  <p class="kicker">Datos · BaseDatosMaestraAyacucho.xlsx</p>
+  <h2>Módulo de valor ganado</h2>
+  <p>La base maestra es la herramienta del administrador. Tiene 368 rubros en 5 capítulos y 18 columnas mensuales. El planificado no se mueve salvo reprogramación; el avance lo estima el profesional en campo por rubro; el costo real es la planilla efectivamente pagada.</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1040 400" role="img" aria-label="Las hojas de la base maestra calculan PV, EV y AC, que alimentan los indicadores de AnálisisVG y luego el tablero y el mapa">
+      <defs>
+        <marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-ink"/></marker>
+        <marker id="d2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-idle"/></marker>
+      </defs>
+      <text x="16" y="22" class="th">Hojas de entrada</text>
+      <text x="330" y="22" class="th">Cálculo</text>
+      <text x="600" y="22" class="th">AnálisisVG</text>
+      <text x="850" y="22" class="th">Salida</text>
+      <rect x="16" y="34" width="250" height="84" rx="4" class="bx"/><text x="30" y="58" class="t">ValorPlanificado</text><text x="30" y="78" class="ts">PV mensual por rubro · 18 meses</text><text x="30" y="96" class="ts">línea base; una reprogramación</text><text x="30" y="110" class="ts">redistribuye cantidades</text>
+      <rect x="16" y="138" width="250" height="84" rx="4" class="bx"/><text x="30" y="162" class="t">Valor Ganado</text><text x="30" y="182" class="ts">% acumulado por rubro</text><text x="30" y="200" class="ts">juicio del profesional; puede</text><text x="30" y="214" class="ts">superar el 100 % contractual</text>
+      <rect x="16" y="242" width="250" height="84" rx="4" class="bx"/><text x="30" y="266" class="t">CostoReal</text><text x="30" y="286" class="ts">planilla por rubro y periodo</text><text x="30" y="304" class="ts">valor bruto sin reajuste</text><text x="30" y="318" class="ts">(= L ÷ 0,8 del financiero)</text>
+      <rect x="16" y="342" width="250" height="44" rx="4" class="bx-dash"/><text x="30" y="362" class="t">Contrato complementario</text><text x="30" y="378" class="ts">rubros nuevos en el mismo objeto</text>
+      <rect x="330" y="52" width="210" height="48" rx="4" class="bx"/><text x="344" y="74" class="t">PV acumulado</text><text x="344" y="90" class="tm">Σ meses ≤ corte</text>
+      <rect x="330" y="156" width="210" height="48" rx="4" class="bx"/><text x="344" y="178" class="t">EV = % × presupuesto</text><text x="344" y="194" class="tm">por rubro, luego Σ</text>
+      <rect x="330" y="260" width="210" height="48" rx="4" class="bx"/><text x="344" y="282" class="t">AC acumulado</text><text x="344" y="298" class="tm">Σ planillas ≤ corte</text>
+      <rect x="600" y="34" width="210" height="300" rx="4" class="bx-acc"/>
+      <text x="614" y="60" class="tm">% FÍS = EV / BAC</text>
+      <text x="614" y="88" class="tm">SV  = EV − PV</text>
+      <text x="614" y="112" class="tm">CV  = EV − AC</text>
+      <text x="614" y="140" class="tm">SPI = EV / PV</text>
+      <text x="614" y="164" class="tm">CPI = EV / AC</text>
+      <text x="614" y="192" class="tm">EAC = AC + (BAC − EV)</text>
+      <text x="614" y="216" class="tm">ETC = EAC − AC</text>
+      <text x="614" y="240" class="tm">VAC = EAC − BAC (hoja)</text>
+      <text x="614" y="262" class="tm">VAC = BAC − EAC (sistema)</text>
+      <text x="614" y="296" class="ts">Corte: mostrar solo hasta</text>
+      <text x="614" y="312" class="ts">el último periodo reportado</text>
+      <rect x="850" y="34" width="176" height="120" rx="4" class="bx"/><text x="862" y="58" class="t">Tablero de avance</text><text x="862" y="78" class="ts">curva S · SPI/CPI</text><text x="862" y="96" class="ts">% avance acumulado</text><text x="862" y="114" class="ts">más reciente</text><text x="862" y="132" class="ts">pronóstico</text>
+      <rect x="850" y="184" width="176" height="96" rx="4" class="bx"/><text x="862" y="208" class="t">Capa ArcGIS</text><text x="862" y="228" class="ts">una fila por tramo</text><text x="862" y="246" class="ts">y fecha de corte</text>
+      <path d="M266,76 L328,76" class="ar" marker-end="url(#d1)"/>
+      <path d="M266,180 L328,180" class="ar" marker-end="url(#d1)"/>
+      <path d="M266,284 L328,284" class="ar" marker-end="url(#d1)"/>
+      <path d="M266,364 L300,364 L300,212 L328,190" class="ar-dash" marker-end="url(#d2)"/>
+      <path d="M540,76 L598,76" class="ar" marker-end="url(#d1)"/>
+      <path d="M540,180 L598,180" class="ar" marker-end="url(#d1)"/>
+      <path d="M540,284 L598,284" class="ar" marker-end="url(#d1)"/>
+      <path d="M810,94 L848,94" class="ar" marker-end="url(#d1)"/>
+      <path d="M810,232 L848,232" class="ar" marker-end="url(#d1)"/>
+    </svg>
+    </div>
+    <figcaption><b>Flujo de datos del valor ganado.</b> El sistema ya reproduce AnálisisVG desde <code>evm_rubro_periodo</code> y corta en la última medición de costo real. Hay que homologar el signo de VAC: al corte la hoja da +148.792 y el sistema −148.792 para el mismo sobrecosto, que es el «148 mil dólares adicionales» que se comentó en la reunión.</figcaption>
+  </figure>
+
+  <h3>Curva S de Ayacucho al 30 de junio</h3>
+  <figure>
+    <div class="scroll"><svg viewBox="0 0 760 360" role="img" aria-label="Curva S de la obra Ayacucho: planificado, valor ganado y costo real acumulados al corte del 30 de junio de 2026" class="chart">
+<line x1="64" x2="740" y1="304.0" y2="304.0" class="grid"/>
+<text x="56" y="308.0" class="tick" text-anchor="end">0 M</text>
+<line x1="64" x2="740" y1="234.0" y2="234.0" class="grid"/>
+<text x="56" y="238.0" class="tick" text-anchor="end">4 M</text>
+<line x1="64" x2="740" y1="164.0" y2="164.0" class="grid"/>
+<text x="56" y="168.0" class="tick" text-anchor="end">8 M</text>
+<line x1="64" x2="740" y1="94.0" y2="94.0" class="grid"/>
+<text x="56" y="98.0" class="tick" text-anchor="end">12 M</text>
+<line x1="64" x2="740" y1="24.0" y2="24.0" class="grid"/>
+<text x="56" y="28.0" class="tick" text-anchor="end">16 M</text>
+<text x="64.0" y="322" class="tick" text-anchor="middle">abr</text>
+<text x="103.8" y="322" class="tick" text-anchor="middle">may</text>
+<text x="143.5" y="322" class="tick" text-anchor="middle">jun</text>
+<text x="183.3" y="322" class="tick" text-anchor="middle">jul</text>
+<text x="223.1" y="322" class="tick" text-anchor="middle">ago</text>
+<text x="262.8" y="322" class="tick" text-anchor="middle">sep</text>
+<text x="302.6" y="322" class="tick" text-anchor="middle">oct</text>
+<text x="342.4" y="322" class="tick" text-anchor="middle">nov</text>
+<text x="382.1" y="322" class="tick" text-anchor="middle">dic</text>
+<text x="421.9" y="322" class="tick" text-anchor="middle">ene</text>
+<text x="461.6" y="322" class="tick" text-anchor="middle">feb</text>
+<text x="501.4" y="322" class="tick" text-anchor="middle">mar</text>
+<text x="541.2" y="322" class="tick" text-anchor="middle">abr</text>
+<text x="580.9" y="322" class="tick" text-anchor="middle">may</text>
+<text x="620.7" y="322" class="tick" text-anchor="middle">jun</text>
+<text x="660.5" y="322" class="tick" text-anchor="middle">jul</text>
+<text x="700.2" y="322" class="tick" text-anchor="middle">ago</text>
+<text x="740.0" y="322" class="tick" text-anchor="middle">sep</text>
+<text x="223.1" y="340" class="tick strong" text-anchor="middle">2026</text>
+<text x="580.9" y="340" class="tick strong" text-anchor="middle">2027</text>
+<line x1="402.0" x2="402.0" y1="310" y2="344" class="grid"/>
+<line x1="143.5" x2="143.5" y1="24" y2="304" class="cut"/>
+<text x="149.5" y="36" class="tick strong">Corte base maestra 30/06/2026</text>
+<path d="M64.0,304.0 L64.0,302.8 L103.8,299.0 L143.5,294.7 L183.3,289.4 L223.1,279.5 L262.8,251.8 L302.6,224.3 L342.4,197.4 L382.1,176.7 L421.9,159.2 L461.6,141.6 L501.4,124.6 L541.2,102.1 L580.9,81.8 L620.7,61.3 L660.5,50.9 L700.2,37.3 L740.0,29.0 L740.0,304.0 Z" class="pv-area"/>
+<polyline points="64.0,302.8 103.8,299.0 143.5,294.7 183.3,289.4 223.1,279.5 262.8,251.8 302.6,224.3 342.4,197.4 382.1,176.7 421.9,159.2 461.6,141.6 501.4,124.6 541.2,102.1 580.9,81.8 620.7,61.3 660.5,50.9 700.2,37.3 740.0,29.0" class="l-pv" fill="none"/>
+<polyline points="64.0,302.2 103.8,297.9 143.5,280.4" class="l-ac" fill="none"/>
+<polyline points="64.0,302.2 103.8,297.9 143.5,283.0" class="l-ev" fill="none"/>
+<circle cx="64.0" cy="302.2" r="3.5" class="d-ev"/>
+<circle cx="103.8" cy="297.9" r="3.5" class="d-ev"/>
+<circle cx="143.5" cy="283.0" r="3.5" class="d-ev"/>
+<rect x="179.3" y="265.6" width="8" height="8" class="d-fin"/>
+<text x="193.3" y="273.6" class="tick">Planillado P4 (financiero) $1.963.717</text>
+<text x="135.5" y="246.4" class="tick" text-anchor="end">AC $1.347.410</text>
+<text x="135.5" y="265.0" class="tick" text-anchor="end">EV $1.198.617</text>
+<text x="700.2" y="27.3" class="tick" text-anchor="end">PV · BAC $15.713.645</text>
+</svg></div>
+    <div class="legend"><span><i style="background:var(--accent-ink)"></i>PV planificado</span><span><i style="background:var(--signal)"></i>EV valor ganado</span><span><i style="background:var(--bad)"></i>AC costo real</span><span><i style="background:var(--ok)"></i>planillado según financiero</span></div>
+    <figcaption><b>A tres meses, la obra va adelantada pero más cara.</b> SPI 2,26 y CPI 0,89 al corte; EAC $15.862.437 frente a un BAC de $15.713.645. Si se dejan arrastrar EV y AC hasta septiembre de 2027, la hoja baja el SPI a 0,08 sin que nada pase en obra: por eso el tablero debe cortar en el último periodo reportado. El punto verde muestra que el financiero ya tiene pagada la planilla 4, que la base maestra aún no registra.</figcaption>
+  </figure>
+
+  <h3>Planificado y costo real por capítulo</h3>
+  <figure>
+    <div class="scroll"><svg viewBox="0 0 760 300" role="img" aria-label="Planificado frente a costo real acumulado por capítulo al 30 de junio de 2026: los capítulos 3 y 4 tienen ejecución sin programación" class="chart">
+<line x1="236.0" x2="236.0" y1="26" y2="284" class="grid"/>
+<text x="236.0" y="20" class="tick" text-anchor="middle">$0</text>
+<line x1="387.3" x2="387.3" y1="26" y2="284" class="grid"/>
+<text x="387.3" y="20" class="tick" text-anchor="middle">$300.000</text>
+<line x1="538.7" x2="538.7" y1="26" y2="284" class="grid"/>
+<text x="538.7" y="20" class="tick" text-anchor="middle">$600.000</text>
+<line x1="690.0" x2="690.0" y1="26" y2="284" class="grid"/>
+<text x="690.0" y="20" class="tick" text-anchor="middle">$900.000</text>
+<text x="226" y="56" class="tick lab" text-anchor="end">1 · Rehabilitación 0+000–10+000</text>
+<text x="226" y="71" class="tick" text-anchor="end">contrato $2.067.736</text>
+<rect x="236" y="42" width="162.8" height="14" class="b-pv"/>
+<rect x="236" y="59" width="91.6" height="14" class="b-ac"/>
+<text x="404.8" y="53" class="tick">$322.744</text>
+<text x="333.6" y="70" class="tick">$181.526</text>
+<text x="226" y="106" class="tick lab" text-anchor="end">2 · Reconstrucción 10+000–32+900</text>
+<text x="226" y="121" class="tick" text-anchor="end">contrato $9.257.212</text>
+<rect x="236" y="92" width="95.1" height="14" class="b-pv"/>
+<rect x="236" y="109" width="405.5" height="14" class="b-ac"/>
+<text x="337.1" y="103" class="tick">$188.504</text>
+<text x="647.5" y="120" class="tick">$803.804</text>
+<text x="226" y="156" class="tick lab" text-anchor="end">3 · Construcción 32+900–34+400</text>
+<text x="226" y="171" class="tick" text-anchor="end">contrato $1.200.554</text>
+<rect x="236" y="142" width="0.0" height="14" class="b-pv"/>
+<rect x="236" y="159" width="78.7" height="14" class="b-ac"/>
+<text x="242.0" y="153" class="tick">$0</text>
+<text x="320.7" y="170" class="tick">$156.078</text>
+<text x="394.7" y="170" class="tick warn">sin programar</text>
+<text x="226" y="206" class="tick lab" text-anchor="end">4 · Reconstrucción 34+400–41+054</text>
+<text x="226" y="221" class="tick" text-anchor="end">contrato $3.069.694</text>
+<rect x="236" y="192" width="0.0" height="14" class="b-pv"/>
+<rect x="236" y="209" width="99.2" height="14" class="b-ac"/>
+<text x="242.0" y="203" class="tick">$0</text>
+<text x="341.2" y="220" class="tick">$196.741</text>
+<text x="415.2" y="220" class="tick warn">sin programar</text>
+<text x="226" y="256" class="tick lab" text-anchor="end">5 · Ambientales</text>
+<text x="226" y="271" class="tick" text-anchor="end">contrato $118.450</text>
+<rect x="236" y="242" width="10.0" height="14" class="b-pv"/>
+<rect x="236" y="259" width="4.7" height="14" class="b-ac"/>
+<text x="252.0" y="253" class="tick">$19.757</text>
+<text x="246.7" y="270" class="tick">$9.260</text>
+</svg></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>PV acumulado P1–P3</span><span><i style="background:var(--bad)"></i>AC acumulado P1–P3</span></div>
+    <figcaption><b>El cronograma valorado ya no describe la obra.</b> Los capítulos 3 y 4 suman $352.819 de costo real sin un dólar programado a junio, y el capítulo 2 ejecutó cuatro veces lo previsto, mientras el capítulo 1 va a la mitad. Esto respalda pedir una reprogramación antes de usar el semáforo por capítulo.</figcaption>
+  </figure>
+</section>
+
+<section id="datos">
+  <p class="kicker">Datos · para_tablero_1.xlsx, hoja «para seg diario planillas»</p>
+  <h2>Lo que dicen hoy los archivos</h2>
+  <figure>
+    <div class="scroll"><svg viewBox="0 0 760 236" role="img" aria-label="Estado de las 18 planillas contractuales de cada obra según el seguimiento financiero" class="chart">
+<text x="222.0" y="20" class="tick" text-anchor="middle">1</text>
+<text x="252.0" y="20" class="tick" text-anchor="middle">2</text>
+<text x="282.0" y="20" class="tick" text-anchor="middle">3</text>
+<text x="312.0" y="20" class="tick" text-anchor="middle">4</text>
+<text x="342.0" y="20" class="tick" text-anchor="middle">5</text>
+<text x="372.0" y="20" class="tick" text-anchor="middle">6</text>
+<text x="402.0" y="20" class="tick" text-anchor="middle">7</text>
+<text x="432.0" y="20" class="tick" text-anchor="middle">8</text>
+<text x="462.0" y="20" class="tick" text-anchor="middle">9</text>
+<text x="492.0" y="20" class="tick" text-anchor="middle">10</text>
+<text x="522.0" y="20" class="tick" text-anchor="middle">11</text>
+<text x="552.0" y="20" class="tick" text-anchor="middle">12</text>
+<text x="582.0" y="20" class="tick" text-anchor="middle">13</text>
+<text x="612.0" y="20" class="tick" text-anchor="middle">14</text>
+<text x="642.0" y="20" class="tick" text-anchor="middle">15</text>
+<text x="672.0" y="20" class="tick" text-anchor="middle">16</text>
+<text x="702.0" y="20" class="tick" text-anchor="middle">17</text>
+<text x="732.0" y="20" class="tick" text-anchor="middle">18</text>
+<text x="198" y="43" class="tick lab" text-anchor="end">Colón – Quimís</text>
+<text x="198" y="58" class="tick" text-anchor="end">Adm. Cristóbal Vélez</text>
+<rect x="210" y="30" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="240" y="30" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="270" y="30" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="300" y="30" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="330" y="30" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="360" y="30" width="24" height="30" rx="3" class="s-rev"/>
+<rect x="390" y="30" width="24" height="30" rx="3" class="s-ela"/>
+<rect x="420" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="450" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="480" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="510" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="540" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="570" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="600" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="630" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="660" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="690" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="720" y="30" width="24" height="30" rx="3" class="s-fut"/>
+<text x="210" y="76" class="tick">Bruto pagado $6.264.510 · 65,3 % de $9.592.884 · neto pagado (L+N) $5.122.329</text>
+<text x="198" y="105" class="tick lab" text-anchor="end">Calceta – Quiroga</text>
+<text x="198" y="120" class="tick" text-anchor="end">Adm. Raquel López</text>
+<rect x="210" y="92" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="240" y="92" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="270" y="92" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="300" y="92" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="330" y="92" width="24" height="30" rx="3" class="s-rev"/>
+<rect x="360" y="92" width="24" height="30" rx="3" class="s-ela"/>
+<rect x="390" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="420" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="450" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="480" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="510" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="540" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="570" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="600" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="630" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="660" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="690" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="720" y="92" width="24" height="30" rx="3" class="s-fut"/>
+<text x="210" y="138" class="tick">Bruto pagado $3.365.240 · 23,5 % de $14.308.405 · neto pagado (L+N) $2.759.255</text>
+<text x="198" y="167" class="tick lab" text-anchor="end">Ayacucho – S. J. Cucarachas</text>
+<text x="198" y="182" class="tick" text-anchor="end">Adm. Manuel Vélez</text>
+<rect x="210" y="154" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="240" y="154" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="270" y="154" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="300" y="154" width="24" height="30" rx="3" class="s-pag"/>
+<rect x="330" y="154" width="24" height="30" rx="3" class="s-dev"/>
+<rect x="360" y="154" width="24" height="30" rx="3" class="s-ela"/>
+<rect x="390" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="420" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="450" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="480" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="510" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="540" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="570" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="600" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="630" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="660" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="690" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<rect x="720" y="154" width="24" height="30" rx="3" class="s-fut"/>
+<text x="210" y="200" class="tick">Bruto pagado $1.963.717 · 12,5 % de $15.713.645 · neto pagado (L+N) $1.609.228</text>
+</svg></div>
+    <div class="legend"><span><i style="background:var(--ok)"></i>8 · pagado</span><span><i style="background:var(--signal)"></i>2 · en revisión de fiscalizador</span><span><i style="background:var(--bad)"></i>2.1 · devuelto por fiscalizador</span><span><i style="background:var(--idle)"></i>1 · en elaboración</span><span><i style="border:1.5px solid var(--line)"></i>periodo futuro</span></div>
+    <figcaption><b>Una fila por obra, una celda por planilla contractual.</b> Colón va en la planilla 7 con 65,3 % planillado; Calceta y Ayacucho, en la 6. El denominador «de 18» es el número de periodos contratados y puede cambiar con plazos adicionales o contratos complementarios.</figcaption>
+  </figure>
+  <h3>Tiempo hasta control previo</h3>
+  <figure>
+    <div class="scroll"><svg viewBox="0 0 760 190" role="img" aria-label="Días entre el fin del periodo de la planilla y su ingreso a control previo" class="chart">
+<line x1="110.0" x2="110.0" y1="24" y2="156" class="grid"/>
+<text x="110.0" y="174" class="tick" text-anchor="middle">0</text>
+<line x1="178.9" x2="178.9" y1="24" y2="156" class="grid"/>
+<text x="178.9" y="174" class="tick" text-anchor="middle">10</text>
+<line x1="247.8" x2="247.8" y1="24" y2="156" class="grid"/>
+<text x="247.8" y="174" class="tick" text-anchor="middle">20</text>
+<line x1="316.7" x2="316.7" y1="24" y2="156" class="grid"/>
+<text x="316.7" y="174" class="tick" text-anchor="middle">30</text>
+<line x1="385.6" x2="385.6" y1="24" y2="156" class="grid"/>
+<text x="385.6" y="174" class="tick" text-anchor="middle">40</text>
+<line x1="454.4" x2="454.4" y1="24" y2="156" class="grid"/>
+<text x="454.4" y="174" class="tick" text-anchor="middle">50</text>
+<line x1="523.3" x2="523.3" y1="24" y2="156" class="grid"/>
+<text x="523.3" y="174" class="tick" text-anchor="middle">60</text>
+<line x1="592.2" x2="592.2" y1="24" y2="156" class="grid"/>
+<text x="592.2" y="174" class="tick" text-anchor="middle">70</text>
+<line x1="661.1" x2="661.1" y1="24" y2="156" class="grid"/>
+<text x="661.1" y="174" class="tick" text-anchor="middle">80</text>
+<line x1="730.0" x2="730.0" y1="24" y2="156" class="grid"/>
+<text x="730.0" y="174" class="tick" text-anchor="middle">90</text>
+<text x="420.0" y="186" class="tick" text-anchor="middle">días desde el fin del periodo</text>
+<text x="98" y="50" class="tick lab" text-anchor="end">Colón</text>
+<text x="310.0" y="50" class="tick">P1 27 · P2 27 · P3 19 · P4 20</text>
+<line x1="240.9" x2="296.0" y1="46" y2="46" class="lag-line"/>
+<circle cx="296.0" cy="46" r="6" class="d-lag"/>
+<circle cx="296.0" cy="46" r="6" class="d-lag"/>
+<circle cx="240.9" cy="46" r="6" class="d-lag"/>
+<circle cx="247.8" cy="46" r="6" class="d-lag"/>
+<text x="98" y="92" class="tick lab" text-anchor="end">Calceta</text>
+<text x="358.2" y="92" class="tick">P1 34 · P2 32</text>
+<line x1="330.4" x2="344.2" y1="88" y2="88" class="lag-line"/>
+<circle cx="344.2" cy="88" r="6" class="d-lag"/>
+<circle cx="330.4" cy="88" r="6" class="d-lag"/>
+<text x="98" y="134" class="tick lab" text-anchor="end">Ayacucho</text>
+<text x="551.1" y="134" class="tick">P1 62 · P2 46</text>
+<line x1="426.9" x2="537.1" y1="130" y2="130" class="lag-line"/>
+<circle cx="537.1" cy="130" r="6" class="d-lag"/>
+<circle cx="426.9" cy="130" r="6" class="d-lag"/>
+</svg></div>
+    <figcaption><b>Indicador candidato para el tablero.</b> Días entre el fin del periodo y la «fecha ingreso control previo». Colón ingresa en 19–27 días; Ayacucho tardó 62 días en su primera planilla. Solo 8 de las 13 planillas pagadas tienen esa fecha.</figcaption>
+  </figure>
+</section>
+
+<section id="conciliacion">
+  <p class="kicker">Datos · cruce de ambos Excel, obra Ayacucho</p>
+  <h2>Conciliación entre el financiero y la base maestra</h2>
+  <p>Para que el tablero no muestre dos verdades, cada columna del seguimiento financiero debería corresponder a un dato de la base maestra. Este es el resultado del cruce valor por valor.</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1000 420" role="img" aria-label="Correspondencia entre columnas del seguimiento financiero y la base maestra: dos coinciden, dos coinciden parcialmente y tres no coinciden">
+      <text x="20" y="26" class="th">Seguimiento financiero</text>
+      <text x="650" y="26" class="th">Base maestra Ayacucho</text>
+      <g>
+        <rect x="20" y="44" width="330" height="40" rx="4" class="bx"/><text x="32" y="69" class="t">L ÷ 0,8  =  M − N  (planilla bruta)</text>
+        <rect x="650" y="44" width="330" height="40" rx="4" class="bx"/><text x="662" y="69" class="t">Costo real del periodo</text>
+        <line x1="350" y1="64" x2="650" y2="64" class="ar-ok"/><text x="500" y="58" class="lbl-ok" text-anchor="middle">coincide al centavo en P1–P3</text>
+      </g>
+      <g>
+        <rect x="20" y="96" width="330" height="40" rx="4" class="bx"/><text x="32" y="121" class="t">K · monto programado planilla</text>
+        <rect x="650" y="96" width="330" height="40" rx="4" class="bx"/><text x="662" y="121" class="t">PV del mes</text>
+        <line x1="350" y1="116" x2="650" y2="116" class="ar-warn"/><text x="500" y="110" class="lbl-warn" text-anchor="middle">P1–P2 sí · P3 720.000 vs 244.862</text>
+      </g>
+      <g>
+        <rect x="20" y="148" width="330" height="40" rx="4" class="bx"/><text x="32" y="173" class="t">H · periodo (fecha o «marzo - abril»)</text>
+        <rect x="650" y="148" width="330" height="40" rx="4" class="bx"/><text x="662" y="173" class="t">Columna fin de mes (30/04/2026…)</text>
+        <line x1="350" y1="168" x2="650" y2="168" class="ar-warn"/><text x="500" y="162" class="lbl-warn" text-anchor="middle">misma secuencia, distinto formato</text>
+      </g>
+      <g>
+        <rect x="20" y="200" width="330" height="40" rx="4" class="bx"/><text x="32" y="225" class="t">S · avance físico acumulado</text>
+        <rect x="650" y="200" width="330" height="40" rx="4" class="bx"/><text x="662" y="225" class="t">% físico = EV / BAC</text>
+        <line x1="350" y1="220" x2="650" y2="220" class="ar-bad"/><text x="500" y="214" class="lbl-bad" text-anchor="middle">8,57 % vs 7,63 % en P3</text>
+      </g>
+      <g>
+        <rect x="20" y="252" width="330" height="40" rx="4" class="bx"/><text x="32" y="277" class="t">Proyecto: «OBRA AYACUCHO - …»</text>
+        <rect x="650" y="252" width="330" height="40" rx="4" class="bx"/><text x="662" y="277" class="t">ID UGP-002 (sistema usa UGP-003)</text>
+        <line x1="350" y1="272" x2="650" y2="272" class="ar-bad"/><text x="500" y="266" class="lbl-bad" text-anchor="middle">sin llave común</text>
+      </g>
+      <g>
+        <rect x="20" y="304" width="330" height="40" rx="4" class="bx-bad"/><text x="32" y="329" class="t">L de la planilla 5 = 531.006,20</text>
+        <rect x="650" y="304" width="330" height="40" rx="4" class="bx-bad"/><text x="662" y="329" class="t">PV acumulado a P3 = 531.006,20</text>
+        <line x1="350" y1="324" x2="650" y2="324" class="ar-bad"/><text x="500" y="318" class="lbl-bad" text-anchor="middle">valor idéntico: posible copia</text>
+      </g>
+      <g>
+        <rect x="20" y="356" width="330" height="40" rx="4" class="bx"/><text x="32" y="381" class="t">N · reajuste de precios</text>
+        <rect x="650" y="356" width="330" height="40" rx="4" class="bx-dash"/><text x="662" y="381" class="ts">no existe en la base maestra</text>
+        <line x1="350" y1="376" x2="650" y2="376" class="ar-dash"/><text x="500" y="370" class="ts" text-anchor="middle">sin par</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption><b>Siete puentes, dos firmes.</b> La columna S se calcula como planilla bruta acumulada ÷ monto contratado en las tres obras: es avance económico. El avance físico verdadero es EV/BAC de la base maestra. La planilla bruta es la llave numérica más confiable entre ambos archivos.</figcaption>
+  </figure>
+</section>
+
+<section id="software">
+  <p class="kicker">Repositorio · elvismoreirav/tableros</p>
+  <h2>Dónde encaja en UGP Integra</h2>
+  <p>El sistema ya resuelve el control de la información: cada entrega se versiona con hash, pasa por consolidación y Calidad, queda en bitácora y se publica a ArcGIS por API. Lo que no tiene es el objeto de negocio que se discutió en la reunión. Hoy la situación de las planillas es un texto libre (<code>informe_contratos.situacion_planillas</code>) con dos contadores, presentadas y pagadas.</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1100 330" role="img" aria-label="Flujo actual de UGP Integra y los cinco elementos nuevos que se conectan a la entrega y a los tableros">
+      <defs>
+        <marker id="e1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-ink"/></marker>
+        <marker id="e2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hd-acc"/></marker>
+      </defs>
+      <text x="16" y="26" class="th">Existe hoy</text>
+      <g>
+        <rect x="16" y="40" width="118" height="46" rx="4" class="bx"/><text x="75" y="68" class="t" text-anchor="middle">Formato</text>
+        <rect x="150" y="40" width="118" height="46" rx="4" class="bx"/><text x="209" y="68" class="t" text-anchor="middle">Entrega</text>
+        <rect x="284" y="40" width="118" height="46" rx="4" class="bx"/><text x="343" y="68" class="t" text-anchor="middle">Consolidación</text>
+        <rect x="418" y="40" width="118" height="46" rx="4" class="bx"/><text x="477" y="68" class="t" text-anchor="middle">Calidad</text>
+        <rect x="552" y="40" width="118" height="46" rx="4" class="bx"/><text x="611" y="68" class="t" text-anchor="middle">Normalización</text>
+        <rect x="686" y="40" width="118" height="46" rx="4" class="bx"/><text x="745" y="68" class="t" text-anchor="middle">Lote ArcGIS</text>
+        <rect x="820" y="40" width="118" height="46" rx="4" class="bx"/><text x="879" y="68" class="t" text-anchor="middle">Publicación API</text>
+        <rect x="954" y="40" width="130" height="46" rx="4" class="bx"/><text x="1019" y="68" class="t" text-anchor="middle">Tableros</text>
+        <path d="M134,63 L148,63" class="ar" marker-end="url(#e1)"/><path d="M268,63 L282,63" class="ar" marker-end="url(#e1)"/>
+        <path d="M402,63 L416,63" class="ar" marker-end="url(#e1)"/><path d="M536,63 L550,63" class="ar" marker-end="url(#e1)"/>
+        <path d="M670,63 L684,63" class="ar" marker-end="url(#e1)"/><path d="M804,63 L818,63" class="ar" marker-end="url(#e1)"/>
+        <path d="M938,63 L952,63" class="ar" marker-end="url(#e1)"/>
+      </g>
+      <text x="477" y="108" class="ts" text-anchor="middle">Validado / Observado</text>
+      <text x="16" y="186" class="th" style="fill:var(--accent-ink)">Se agrega</text>
+      <rect x="150" y="200" width="150" height="56" rx="4" class="bx-acc"/><text x="162" y="224" class="t">Planilla</text><text x="162" y="242" class="ts">N de 18, montos</text>
+      <rect x="320" y="200" width="170" height="56" rx="4" class="bx-acc"/><text x="332" y="224" class="t">Evento de estado</text><text x="332" y="242" class="ts">historial y devoluciones</text>
+      <rect x="510" y="200" width="190" height="56" rx="4" class="bx-acc"/><text x="522" y="224" class="t">Facturas y reajustes</text><text x="522" y="242" class="ts">principal, provisional, definitivo</text>
+      <rect x="720" y="200" width="190" height="56" rx="4" class="bx-acc"/><text x="732" y="224" class="t">Corte presupuestario</text><text x="732" y="242" class="ts">partida × año (FYU)</text>
+      <rect x="954" y="200" width="130" height="56" rx="4" class="bx-acc"/><text x="966" y="224" class="t">Saldos</text><text x="966" y="242" class="ts">y semáforo</text>
+      <path d="M209,88 L209,198" class="ar-acc" marker-end="url(#e2)"/>
+      <text x="216" y="150" class="lbl-acc">respalda (carga_id)</text>
+      <path d="M300,228 L318,228" class="ar-acc" marker-end="url(#e2)"/>
+      <path d="M490,228 L508,228" class="ar-acc" marker-end="url(#e2)"/>
+      <path d="M700,228 L718,228" class="ar-acc" marker-end="url(#e2)"/>
+      <text x="709" y="276" class="lbl-acc" text-anchor="middle">devenga</text>
+      <path d="M910,228 L952,228" class="ar-acc" marker-end="url(#e2)"/>
+      <path d="M1019,198 L1019,88" class="ar-acc" marker-end="url(#e2)"/>
+      <text x="1026" y="150" class="lbl-acc">alimenta</text>
+      <path d="M405,258 L405,300 L879,300 L879,88" class="ar-acc" marker-end="url(#e2)"/>
+      <text x="640" y="318" class="lbl-acc" text-anchor="middle">estado vigente y código de proceso hacia el mapa</text>
+    </svg>
+    </div>
+    <figcaption><b>Lo actual, en blanco; lo nuevo, en amarillo.</b> La planilla queda respaldada por la entrega Financiero que ya pasa por Calidad, así el flujo institucional no se duplica. El estado sí puede cambiar sin una nueva entrega, porque es dinámico: lo actualiza el perfil autorizado y la bitácora existente registra antes y después.</figcaption>
+  </figure>
+</section>
+
+<section id="modelo">
+  <p class="kicker">Propuesta · se apoya en tablas existentes</p>
+  <h2>Modelo de datos propuesto</h2>
+  <p><code>proyectos</code>, <code>contratos_proyecto</code>, <code>cargas</code>, <code>evidencias</code>, <code>roles</code> y <code>usuarios</code> ya existen en <code>database/schema.sql</code> (a <code>contratos_proyecto</code> se le agregan campos); el resto son nuevas. Los rubros ambientales quedan con <code>tramo_id</code> vacío, como transversales. La llave hacia los sistemas institucionales es el código e-GOP del contrato; cada planilla lleva su N° SPA AFLOW.</p>
+  <pre class="mermaid">
+erDiagram
+  proyectos ||--o{ contratos_proyecto : "tiene"
+  contratos_proyecto ||--o{ contratos_proyecto : "complementario de"
+  contratos_proyecto ||--o{ contrato_fuentes : "se reparte en"
+  contratos_proyecto ||--o{ planillas : "factura"
+  cargas ||--o{ planillas : "respalda"
+  planillas ||--o{ planilla_eventos : "historial"
+  estados_planilla ||--o{ planilla_eventos : "estado nuevo"
+  evidencias ||--o{ planilla_eventos : "respaldo"
+  usuarios ||--o{ planilla_eventos : "registra"
+  planillas ||--o{ planilla_facturas : "principal y reajustes"
+  proyectos ||--o{ proyecto_estados : "activa"
+  estados_planilla ||--o{ proyecto_estados : "se configura"
+  proyecto_estados ||--o{ proyecto_permisos_estado : "quien cambia"
+  roles ||--o{ proyecto_permisos_estado : "perfil"
+  partidas_presupuestarias ||--o{ ejecucion_partida : "por corte y año"
+  contratos_proyecto }o--o{ partidas_presupuestarias : "se financia con"
+  contratos_proyecto {
+    string codigo_egob "nuevo"
+    string tipo "Obra, Fiscalizacion, Complementario"
+    decimal monto_contractual
+    decimal anticipo_porcentaje
+    int total_periodos "18, ajustable"
+    bool permite_fuera_contrato
+  }
+  contrato_fuentes {
+    string fuente "CAF, GADPM"
+    decimal porcentaje
+  }
+  planillas {
+    int numero "1..N"
+    bool fuera_de_contrato
+    date periodo_inicio
+    date periodo_fin
+    decimal monto_programado
+    decimal monto_bruto
+    decimal amortizacion_anticipo
+    decimal monto_neto
+    decimal monto_opis
+    string numero_spa_aflow
+    string oficio_pago
+    date fecha_pago
+    string estado_vigente
+  }
+  planilla_eventos {
+    string estado_anterior
+    string estado_nuevo
+    string devuelto_por
+    text motivo
+    datetime fecha_hora
+  }
+  estados_planilla {
+    string codigo "1, 2, 2.1 ... 8"
+    string nombre
+    bool es_devolucion
+    bool suma_montos "solo 8"
+  }
+  proyecto_estados {
+    bool activo
+    bool destacado
+  }
+  proyecto_permisos_estado {
+    bool puede_cambiar
+    bool exige_respaldo
+  }
+  planilla_facturas {
+    string tipo "principal, reajuste_provisional, reajuste_definitivo"
+    string numero_factura
+    decimal monto "con signo"
+  }
+  partidas_presupuestarias {
+    string codigo_partida
+    string nombre_partida
+    string fuente
+    string componente_fyu
+  }
+  ejecucion_partida {
+    date fecha_corte
+    int anio
+    decimal codificado
+    decimal certificado
+    decimal comprometido
+    decimal devengado
+    decimal pagado
+  }
+  </pre>
+  <p class="src">Reglas de cálculo que el sistema derivaría y no se digitan: neto = bruto − amortización; valor a pagar = neto + Σ reajustes; avance económico = Σ bruto de planillas pagadas ÷ monto contractual; saldo por planillar = contrato − Σ bruto; por certificar = codificado − certificado.</p>
+</section>
+
+<section id="hallazgos">
+  <p class="kicker">Calidad de datos</p>
+  <h2>Hallazgos en los archivos</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Acción</th><th>Hallazgo</th><th>Evidencia</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pill idle">Resuelto</span></td><td>La planilla 5 de Ayacucho tiene el mismo valor que el PV acumulado al periodo 3. Los archivos son referenciales; se deja como aviso automático cuando un monto cargado coincide con el planificado.</td><td class="num">L21 = 531.006,20</td></tr>
+      <tr><td><span class="pill bad">Definir</span></td><td>«Avance físico acumulado» del financiero es avance económico (bruto acumulado ÷ contrato), no valor ganado.</td><td class="num">P3: 8,57 % vs 7,63 %</td></tr>
+      <tr><td><span class="pill bad">Corregir</span></td><td>Según la documentación, Ayacucho es UGP-002; el sistema lo tiene como UGP-003 y usa UGP-002 para Calceta. Antes de cambiar el importador hay que ver los ID de las bases de Calceta y Colón.</td><td class="num">ValorPlanificado!F4</td></tr>
+      <tr><td><span class="pill idle">Resuelto</span></td><td>El monto planillado acumulado del Excel suma planillas no pagadas. En el sistema solo suben y suman las pagadas.</td><td class="num">Colón P6: +607.270,18</td></tr>
+      <tr><td><span class="pill warn">Definir</span></td><td>La columna M («incluye anticipo») es bruta + reajuste y solo está llena en Colón y Ayacucho.</td><td class="num">M − N = L ÷ 0,8</td></tr>
+      <tr><td><span class="pill warn">Corregir</span></td><td>El avance programado mezcla valores mensuales y acumulados, y algunos se escribieron como texto.</td><td class="num">«4,10%» · «0,435%»</td></tr>
+      <tr><td><span class="pill warn">Verificar</span></td><td>Monto programado repetido que no corresponde al PV del mes.</td><td class="num">Calceta 789.000 ×4</td></tr>
+      <tr><td><span class="pill warn">Verificar</span></td><td>Monto OPIS registrado en planillas que no están pagadas.</td><td class="num">Calceta P5, P6</td></tr>
+      <tr><td><span class="pill info">Mostrar</span></td><td>La base maestra está a 30/06 y el financiero ya pagó julio. Como no tiene frecuencia fija, el tablero debe mostrar la fecha de corte de cada fuente.</td><td class="num">P4 Ayacucho</td></tr>
+      <tr><td><span class="pill idle">Resuelto</span></td><td>Los rubros ambientales (capítulo 5) llevan el tramo 02-04. Serán transversales: al importar se quita el tramo.</td><td class="num">10 rubros</td></tr>
+      <tr><td><span class="pill idle">Resuelto</span></td><td>La base maestra marca GADPM en 96 rubros y el financiero marca toda la obra como CAF. El reparto se toma de la información general del contrato.</td><td class="num">columna FUENTE FIN.</td></tr>
+      <tr><td><span class="pill info">Reprogramar</span></td><td>Capítulos 3 y 4 con costo real sin programación a junio.</td><td class="num">$352.819</td></tr>
+      <tr><td><span class="pill info">Formato</span></td><td>Celdas combinadas, filas de subtotal intercaladas y periodo como fecha o como texto impiden la carga directa.</td><td class="num">A2:F23</td></tr>
+      <tr><td><span class="pill idle">Pendiente</span></td><td>La hoja de fuentes y usos solo tiene encabezados, y ningún archivo trae el código de proceso.</td><td class="num">FYU fila 1</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="preguntas">
+  <p class="kicker">Para cerrar el levantamiento</p>
+  <h2>Pendientes</h2>
+  <p>Quedan cinco puntos. Ninguno impide empezar el módulo de planillas; el segundo sí condiciona el módulo presupuestario.</p>
+  <ol class="qs">
+    <li><b>Avance físico y avance económico.</b> Recomendación: el tablero muestra los dos, con nombre y fecha de corte propios. <i>Avance físico</i> = EV ÷ BAC de la base maestra (lo que dice fiscalización que se ejecutó). <i>Avance económico</i> = planilla bruta pagada acumulada ÷ monto contractual (lo que ya se pagó). Junto a ellos, el <i>avance programado</i> = PV ÷ BAC. Con los archivos de Ayacucho a junio serían 7,6 % físico, 8,6 % económico y 3,4 % programado.<small>¿Confirman estos tres nombres y definiciones?</small></li>
+    <li><b>Hoja de fuentes y usos (FYU).</b> Sus columnas (partida, fuente, codificado, certificado, comprometido, devengado, pagado, años 2024–2028) son las de una cédula presupuestaria, que normalmente se exporta del sistema financiero. Para conectarla con las planillas necesito saber tres cosas:
+      <small>a) <b>Origen:</b> ¿la exporta el área financiera desde e-GOP o desde el ERP, o se arma a mano?<br>
+      b) <b>Frecuencia:</b> ¿se actualiza cada mes, a cada pago o cuando la pide Dirección? Define cada cuánto se puede refrescar el saldo y el semáforo.<br>
+      c) <b>Nivel de detalle:</b> ¿cada fila es una partida de <i>un</i> proyecto (por ejemplo la partida de obras viales de Ayacucho con fuente CAF) o una partida del programa que sirve a las tres obras? Si es del programa, el sistema no puede saber cuánto devengó cada obra y habría que repartirlo.<br>
+      Y una cuarta: las columnas 2024 a 2028, ¿son lo devengado en cada año o lo planificado por año?</small></li>
+    <li><b>Códigos de proyecto.</b> La base de Ayacucho dice UGP-002, pero en el sistema UGP-002 es Calceta.<small>¿Qué ID traen las bases maestras de Calceta y de Colón? Con eso se reasignan los tres códigos sin cruzarlos.</small></li>
+    <li><b>Código e-GOP y código SERCOP.</b> Entendí que e-GOP tiene su propio código.<small>¿El contrato debe guardar los dos (proceso SERCOP y e-GOP) o solo el de e-GOP?</small></li>
+    <li><b>Reajuste definitivo de meses anteriores.</b> Se registra en la planilla del mes en que se factura.<small>¿Conviene guardar, como dato opcional, a qué planilla corresponde ese reajuste? Sirve para conciliar con la certificación, sin cambiar dónde suma.</small></li>
+  </ol>
+</section>
+
+<section>
+  <p class="kicker">Fuentes</p>
+  <p class="src">BaseDatosMaestraAyacucho.xlsx (PORTADA, ValorPlanificado, Valor Ganado, CostoReal, AnálisisVG y la hoja oculta Cuadro 43MM . rev CAF) · para_tablero_1.xlsx (para seg diario planillas, para tablero cuadro FYU) · Transcripción de reunión 15:34–16:39, solo los tramos sobre el proceso · Resumen de la sesión · Repositorio <a href="https://github.com/elvismoreirav/tableros">elvismoreirav/tableros</a> (schema.sql, importador, servicios de informe de avance, valor ganado y ArcGIS). Cifras calculadas sobre los valores guardados en los libros, sin recalcular fórmulas.</p>
+</section>
+</main>
+</div>
+
+<!--claude-mermaid-runtime-begin:3477-->
+<style>.mermaid-diagram{margin-block:4px}.mermaid-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}</style>
+<script src="/_runtime/mermaid-11.16.1.min.js"></script>
+<script>(function(){
+var CFG={"palettes":{"light":{"surface":"#f4efe4","text":"#42392e","line":"#8a7f6d","border":"#7a6c52","bg":"#fffdf8"},"dark":{"surface":"#262b34","text":"#f2f3f5","line":"#a8adb8","border":"#9aa4b8","bg":"#1f232b"}}};
+if(typeof mermaid==='undefined')return;
+var pres=Array.prototype.slice.call(document.querySelectorAll('pre.mermaid')).filter(function(p){if(p.hasAttribute('data-claude-mermaid-claimed'))return false;p.setAttribute('data-claude-mermaid-claimed','1');return true;});
+if(!pres.length)return;
+var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+var root=document.documentElement;
+var items=pres.map(function(pre){
+var mount=document.createElement('div');mount.className='mermaid-diagram';
+return {pre:pre,mount:mount,src:pre.textContent||''};
+});
+var seq=0;
+var renderGen=0;
+var lastKey='';
+function pageBg(fallback){
+var els=[document.body,document.documentElement];
+for(var i=0;i<els.length;i++){
+var c=els[i]&&getComputedStyle(els[i]).backgroundColor;
+if(c&&c!=='transparent'&&c!=='rgba(0, 0, 0, 0)')return c;
+}
+return fallback;
+}
+function render(){
+var theme=root.getAttribute('data-theme');
+var dark=theme==='dark'||(!!(mq&&mq.matches)&&theme!=='light');
+var pal=dark?CFG.palettes.dark:CFG.palettes.light;
+var bg=pageBg(pal.bg);
+var key=(dark?'d':'l')+'|'+bg;
+if(key===lastKey)return;
+lastKey=key;
+var gen=++renderGen;
+var font=getComputedStyle(document.body).fontFamily||'sans-serif';
+var nat={useMaxWidth:false};
+mermaid.initialize({
+startOnLoad:false,securityLevel:'strict',theme:'base',
+flowchart:nat,sequence:nat,er:nat,state:nat,class:nat,pie:nat,
+gantt:nat,journey:nat,timeline:nat,gitGraph:nat,mindmap:nat,xyChart:nat,
+quadrantChart:nat,sankey:nat,c4:nat,requirement:nat,block:nat,
+packet:nat,kanban:nat,architecture:nat,radar:nat,
+themeVariables:{background:bg,mainBkg:pal.surface,primaryColor:pal.surface,
+primaryTextColor:pal.text,lineColor:pal.line,primaryBorderColor:pal.border,
+nodeBorder:pal.border,clusterBorder:pal.border,edgeLabelBackground:bg,
+clusterBkg:'rgba(127,127,127,0.07)',titleColor:pal.text,
+darkMode:dark,rowOdd:bg,rowEven:'rgba(127,127,127,0.07)',
+attributeBackgroundColorOdd:bg,attributeBackgroundColorEven:'rgba(127,127,127,0.07)',
+fontSize:'16px',fontFamily:font},
+themeCSS:'.node rect, .node circle, .node polygon, .node path, .cluster rect { stroke-width: 2px; }'
+});
+items.forEach(function(it){
+var id='claude-mermaid-'+seq++;
+mermaid.render(id,it.src).then(function(r){
+if(gen!==renderGen)return;
+var prev=it.pre.previousElementSibling;
+if(prev&&prev.className==='mermaid-diagram'&&prev!==it.mount)return;
+it.mount.innerHTML=r.svg;
+if(!it.mount.parentNode)it.pre.parentNode.insertBefore(it.mount,it.pre);
+it.pre.style.display='none';
+},function(){
+var scratch=document.getElementById(id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+scratch=document.getElementById('d'+id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+if(gen!==renderGen)return;
+if(it.mount.parentNode)it.mount.parentNode.removeChild(it.mount);
+it.pre.style.display='';
+});
+});
+}
+render();
+if(mq&&mq.addEventListener)mq.addEventListener('change',render);
+if(typeof MutationObserver!=='undefined')new MutationObserver(render).observe(root,{attributes:true,attributeFilter:['data-theme']});
+})();</script>
+<!--claude-mermaid-runtime-end-->
+
+</body></html>
