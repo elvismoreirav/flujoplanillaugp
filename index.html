@@ -137,7 +137,7 @@ html{scroll-behavior:smooth}
   <p>Contenido</p>
   <ol>
     <li><a href="#resumen">Resumen</a></li>
-    <li><a href="#implementado">Qué cambió</a></li>
+    <li><a href="#implementado">Decisiones</a></li>
     <li><a href="#contexto">Fuentes y sistema</a></li>
     <li><a href="#planilla">Ciclo de la planilla</a></li>
     <li><a href="#entrega">Entrega en dos pasos</a></li>
@@ -150,7 +150,6 @@ html{scroll-behavior:smooth}
     <li><a href="#software">Flujo en el sistema</a></li>
     <li><a href="#modelo">Modelo de datos</a></li>
     <li><a href="#hallazgos">Hallazgos</a></li>
-    <li><a href="#preguntas">Pendientes</a></li>
   </ol>
 </nav>
 <main>
@@ -174,22 +173,8 @@ html{scroll-behavior:smooth}
 </header>
 
 <section id="implementado">
-  <p class="kicker">Repositorio elvismoreirav/tableros · 25/10 al 04/11/2026</p>
-  <h2>Qué cambió en el sistema</h2>
-  <p>Nueve cambios, 54 archivos y dos migraciones nuevas (<code>016_planillas</code> y <code>017_planillas_primero_y_estado_tramo</code>). Todos los archivos PHP modificados pasan la revisión de sintaxis.</p>
-  <ol class="commits">
-    <li><time>25/10/2026</time><code>ea40cc2</code><span>Módulo Planillas: estados configurables por proyecto, perfiles habilitados, respaldo con hash e historial. Perfiles nuevos Administrador de contrato y Área financiera.</span></li>
-    <li><time>25/10/2026</time><code>bb36de9</code><span>Documentación del módulo y análisis de la información financiera.</span></li>
-    <li><time>27/10/2026</time><code>4c8ea7a</code><span>Demostración 9 en el proyecto propio UGP-DEMO, de la entrega a ArcGIS.</span></li>
-    <li><time>27/10/2026</time><code>765001b</code><span>Pasos de despliegue de las migraciones y guía de la demostración 9.</span></li>
-    <li><time>29/10/2026</time><code>0a754b3</code><span>Demostración 10: práctica en UGP-PRACTICA con diez cuentas asignadas.</span></li>
-    <li><time>29/10/2026</time><code>76a0007</code><span>Guía de la práctica con ejercicios y montos de referencia.</span></li>
-    <li><time>29/10/2026</time><code>7ec887f</code><span>Envíos con archivos grandes: límite de 128 MB por envío y mensaje claro en lugar de perder la sesión.</span></li>
-    <li><time>04/11/2026</time><code>226e585</code><span>Entrega Financiero en dos pasos, cálculo PV/EV/AC por tramo y publicación con el formato del dashboard.</span></li>
-    <li><time>04/11/2026</time><code>6bb2773</code><span>La capa «Estado del tramo» se actualiza por <code>id_tramo</code> y conserva las líneas dibujadas en ArcGIS. Guía de conexión del dashboard.</span></li>
-  </ol>
-
-  <h3>De cada decisión a su implementación</h3>
+  <p class="kicker">Estado al 04/11/2026</p>
+  <h2>De cada decisión a su implementación</h2>
   <div class="tbl"><table>
     <thead><tr><th>Decisión</th><th>Cómo quedó en el sistema</th><th>Estado</th></tr></thead>
     <tbody>
@@ -1261,22 +1246,6 @@ erDiagram
       <tr><td><span class="pill idle">Pendiente</span></td><td>La hoja de fuentes y usos solo tiene encabezados. El código e-GOP ya tiene campo en el contrato, pero aún no se ha cargado.</td><td class="num">FYU fila 1</td></tr>
     </tbody>
   </table></div>
-</section>
-
-<section id="preguntas">
-  <p class="kicker">Al 05/11/2026</p>
-  <h2>Pendientes</h2>
-  <p>El módulo de planillas y la publicación por tramo están listos. Lo que falta se reparte entre configuración, datos y dos decisiones.</p>
-  <ol class="qs">
-    <li><b>Configurar el portal para el dashboard.</b> Crear «UGP Valor ganado por tramo» y «UGP Estado del tramo» desde las plantillas, habilitar edición, compartir, ponerlas en ProviamaEEMV y apuntar el <code>.env</code> (<code>ARCGIS_FEATURE_LAYER_URL</code>, <code>ARCGIS_ITEM_ID</code>, <code>ARCGIS_TRAMOS_LAYER_URL</code>, <code>ARCGIS_AMBIENTE=produccion</code>).<small>Responsable: usuario del portal. Guía: partes A y B de guia-dashboard-tableros-proyecto-ugp.md.</small></li>
-    <li><b>Desplegar las migraciones 015, 016 y 017 en el servidor</b> con <code>bin/aplicar_migracion.php</code> y verificar con <code>bin/verificar_despliegue.php</code>.<small>Si ya se hizo, falta confirmarlo.</small></li>
-    <li><b>Corregir los contratos.</b> Anticipo de Ayacucho (20 %), contrato de obra de Calceta y código e-GOP de cada contrato.<small>En Planillas → Configurar estados y contratos.</small></li>
-    <li><b>Reimportar la base maestra de julio de Ayacucho.</b> La tabla del mapa actual ya trae julio y otro PV en el tramo 02-04.<small>Hace falta el archivo.</small></li>
-    <li><b>Rubros ambientales transversales.</b> Se decidió tratarlos sin tramo, pero se siguen sumando al 02-04.<small>Decisión: ¿se publican como fila aparte del proyecto o solo se excluyen del mapa?</small></li>
-    <li><b>Módulo presupuestario.</b> Necesita la hoja de fuentes y usos con datos y las respuestas sobre origen (e-GOP, ERP o manual), frecuencia, nivel (partida por proyecto o por programa) y si las columnas 2024–2028 son devengado o planificado.</li>
-    <li><b>Primeras planillas reales.</b> Crear las cuentas de Administrador de contrato y Área financiera, asignarlas a sus proyectos, elegir los estados de cada proyecto y registrar las planillas con su respaldo.</li>
-  </ol>
-  <div class="note">Documentación del repositorio que quedó desactualizada: <code>docs/planillas-componente-financiero.md</code> todavía lista como pendiente la capa «Estado del tramo», y el apartado «Entrega en línea» del README describe la sugerencia de cantidades programadas y el cálculo cantidad × precio, que el paso 2 reemplazó por el % acumulado con lo programado solo como referencia.</div>
 </section>
 </main>
 </div>
